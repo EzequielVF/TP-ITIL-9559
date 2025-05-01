@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TP_ITIL_9559.Data.Domain;
 
 namespace TP_ITIL_9559.Data
 {
@@ -16,5 +17,11 @@ namespace TP_ITIL_9559.Data
                 entity.SetTableName(entity.DisplayName());
             }
         }
+
+        public DbSet<Incident> Incidents { get; set; }
+        public DbSet<Problem> Problems { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Change> Changes { get; set; }
+        public DbSet<ConfigurationItem> Configuration { get; set; }
     }
 }
