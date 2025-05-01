@@ -12,7 +12,7 @@ namespace TP_ITIL_9559.Migrations
         {
             migrationBuilder.Sql(@"
                 INSERT INTO public.""User"" (""Id"", ""Email"", ""Password"")
-                VALUES (0, 'ezequie@fiuba.com', '1234');
+                VALUES (0, 'ezequiel@fiuba.com', '1234');
             ");
 
             migrationBuilder.Sql(@"
