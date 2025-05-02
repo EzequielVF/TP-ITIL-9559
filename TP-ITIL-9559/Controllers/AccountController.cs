@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using TP_ITIL_9559.Sys;
 
 namespace TP_ITIL_9559.Controllers
 { 
@@ -41,6 +42,37 @@ namespace TP_ITIL_9559.Controllers
             {
                 userId= currentUser.Id
             });
+        }
+
+        [HttpPost("/account/register")]
+        public async Task<IActionResult> Register([FromBody] UserDto user)
+        {
+            var email = user.email?.ToLower();
+
+            var currenUser = DbContext.Users.SingleOrDefault(p => p.Email == email);
+
+            if(currenUser != null) 
+            {
+                throw new BusinessException($"El email {email} ya está registrado.");
+            }
+
+            DbContext.Users.Add(new User
+            {
+                Email = email,
+                Password = user.password
+            });
+
+            DbContext.SaveChanges();
+                
+            return Accepted();
+        }
+
+        [HttpPost("/account/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return Ok();
         }
     }
 }
