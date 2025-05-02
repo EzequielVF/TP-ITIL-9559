@@ -46,6 +46,12 @@ namespace TP_ITIL_9559.Controllers
             });
         }
 
+        [HttpGet("users")]
+        public IActionResult Users()
+        {
+            return Ok(DbContext.Users.ToList().Select(x => x.Email));
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDto user)
         {
