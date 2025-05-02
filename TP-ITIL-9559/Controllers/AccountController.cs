@@ -82,5 +82,30 @@ namespace TP_ITIL_9559.Controllers
 
             return Ok();
         }
+
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            var email = User.Identity.Name;
+
+            var user = DbContext.Users.SingleOrDefault(u => u.Email == email);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(new
+            {
+                id = user.Id,
+                email = user.Email
+            });
+        }
+
     }
 }
