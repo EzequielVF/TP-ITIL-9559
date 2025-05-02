@@ -15,11 +15,25 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirConCredenciales", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseMiddleware<UserIdMiddleware>();
 app.UseAuthentication();
+
+app.UseCors("PermitirConCredenciales");
+
 app.UseAuthorization();
 
 app.MapControllers();
