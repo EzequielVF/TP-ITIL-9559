@@ -40,5 +40,11 @@ namespace TP_ITIL_9559.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("items")]
+        public IActionResult Items()
+        {
+            return Ok(DbContext.Configuration.OrderByDescending(i => i.CreatedDate));
+        }
     }
 }
