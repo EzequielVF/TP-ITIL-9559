@@ -8,7 +8,9 @@ using System.Security.Claims;
 using TP_ITIL_9559.Sys;
 
 namespace TP_ITIL_9559.Controllers
-{ 
+{
+    [ApiController]
+    [Route("api/[controller]")]
     public class AccountController : Controller
     {
             public ITILDbContext DbContext {get;set;}
@@ -17,7 +19,7 @@ namespace TP_ITIL_9559.Controllers
                 DbContext = dbContext;
             }
             
-        [HttpPost("/account/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto user)
         {
             var email = user.email?.ToLower();
@@ -44,7 +46,7 @@ namespace TP_ITIL_9559.Controllers
             });
         }
 
-        [HttpPost("/account/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDto user)
         {
             var email = user.email?.ToLower();
@@ -67,7 +69,7 @@ namespace TP_ITIL_9559.Controllers
             return Accepted();
         }
 
-        [HttpPost("/account/logout")]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
