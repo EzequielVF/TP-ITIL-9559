@@ -2,7 +2,6 @@
   "profiles": {
     "http": {
       "commandName": "Project",
-      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DATABASE_URL": "postgres://postgres:123456@localhost:5432/postgres"

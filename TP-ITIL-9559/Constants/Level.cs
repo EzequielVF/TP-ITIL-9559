@@ -1,4 +1,4 @@
-namespace TP_ITIL_9559.Data.Constants
+namespace TP_ITIL_9559.Constants
 {
     public class Level
     {

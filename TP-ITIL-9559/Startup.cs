@@ -12,7 +12,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Register the DbContext with the connection string
         services.AddDbContext<ITILDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("MyPostgresConnection")));
 
@@ -22,7 +21,6 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITILDbContext dbContext)
     {
-        app.UseExceptionHandler("/error");
         app.UseHsts();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
@@ -37,5 +35,4 @@ public class Startup
 
         dbContext.Database.Migrate();
     }
-
 }
