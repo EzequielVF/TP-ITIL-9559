@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace TP_ITIL_9559.Controllers
-{ 
+{
     [ApiController]
     [Route("api/[controller]")]
     public class IncidentController : ControllerBase
     {
-        public ITILDbContext DbContext {get;set;}
+        public ITILDbContext DbContext { get; set; }
         public IncidentController(ITILDbContext dbContext)
         {
             DbContext = dbContext;

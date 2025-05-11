@@ -13,12 +13,12 @@ namespace TP_ITIL_9559.Controllers
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
-            public ITILDbContext DbContext {get;set;}
-            public AccountController(ITILDbContext dbContext)
-            {
-                DbContext = dbContext;
-            }
-            
+        public ITILDbContext DbContext { get; set; }
+        public AccountController(ITILDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto user)
         {
@@ -26,7 +26,7 @@ namespace TP_ITIL_9559.Controllers
 
             var currentUser = DbContext.Users.SingleOrDefault(p => p.Email == email && p.Password == user.password);
 
-            if (currentUser == null) 
+            if (currentUser == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
@@ -42,7 +42,7 @@ namespace TP_ITIL_9559.Controllers
 
             return Ok(new
             {
-                userId= currentUser.Id
+                userId = currentUser.Id
             });
         }
 
@@ -59,7 +59,7 @@ namespace TP_ITIL_9559.Controllers
 
             var currenUser = DbContext.Users.SingleOrDefault(p => p.Email == email);
 
-            if(currenUser != null) 
+            if (currenUser != null)
             {
                 throw new BusinessException($"El email {email} ya está registrado.");
             }
@@ -71,7 +71,7 @@ namespace TP_ITIL_9559.Controllers
             });
 
             DbContext.SaveChanges();
-                
+
             return Accepted();
         }
 
