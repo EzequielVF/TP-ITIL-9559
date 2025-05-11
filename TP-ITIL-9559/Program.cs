@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TP_ITIL_9559.Data;
+using TP_ITIL_9559.Interceptos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +27,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-var app = builder.Build();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseMiddleware<UserIdMiddleware>();
+app.UseMiddleware<ExceptionHandler>();
 app.UseAuthentication();
 
 app.UseCors("PermitirConCredenciales");

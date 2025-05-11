@@ -46,5 +46,28 @@ namespace TP_ITIL_9559.Controllers
         {
             return Ok(DbContext.Configuration.OrderByDescending(i => i.CreatedDate));
         }
+
+        [HttpPatch("item/{itemId}")]
+        public IActionResult UpdateItem([FromBody] ConfigurationItemDto modifiedItem, long itemId)
+        {
+            if (ModelState.IsValid)
+            {
+                var item = DbContext.Configuration.SingleOrDefault(i => i.Id == itemId);
+                if (item != null)
+                {
+                    var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
+                    history[modifiedItem.versionId] = String.Format("Titulo:{0}|Descripcion:{1}", modifiedItem.title, modifiedItem.description);
+                    item.Title = modifiedItem.title;
+                    item.Description = modifiedItem.description;
+                    item.VersionId = modifiedItem.versionId;
+                    item.VersionHistory = JsonConvert.SerializeObject(history);
+                    DbContext.Configuration.Update(item);
+                    DbContext.SaveChanges();
+                    return Ok(item);
+                }
+                return NotFound("Configuration Item not found!");
+            }
+            return BadRequest("Bad request!");
+        }
     }
 }
