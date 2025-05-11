@@ -69,5 +69,18 @@ namespace TP_ITIL_9559.Controllers
             }
             return BadRequest("Bad request!");
         }
+
+        [HttpDelete("item/{itemId}")]
+        public IActionResult DeleteItem(long itemId)
+        {
+            var item = DbContext.Configuration.SingleOrDefault(i => i.Id == itemId);
+            if (item != null)
+            {
+                DbContext.Configuration.Remove(item);
+                DbContext.SaveChanges();
+                return Ok($"Item: {itemId} deleted succesfuly");
+            }
+            return NotFound($"Item: {itemId} not found");
+        }
     }
 }
