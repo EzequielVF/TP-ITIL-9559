@@ -34,9 +34,9 @@ namespace TP_ITIL_9559.Migrations
             migrationBuilder.AddColumn<int>(
                 name: "TrackingNumber",
                 table: "Incident",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+                type: "serial",
+                nullable: false);
+
 
             migrationBuilder.AddColumn<string>(
                 name: "ClientEmail",
