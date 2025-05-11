@@ -60,10 +60,78 @@ namespace TP_ITIL_9559.Controllers
                     AssignedUser = new { assignedUser.Id, assignedUser.Email },
                     Incidents = incidents.Select(i => new { i.Id, i.Title })
                 };
-
                 return Ok(response);
             }
+            return BadRequest();
+        }
 
+        [HttpGet("")]
+        public IActionResult Problems()
+        {
+            return Ok(DbContext.Problems
+                .Include(p => p.AssignedUser)
+                .Include(p => p.Incidents)
+                .OrderByDescending(p => p.CreatedDate)
+                .Select(p => new
+                {   
+                    p.Id,
+                    p.Title,
+                    p.Description,
+                    p.CreatedDate,
+                    p.ConfigurationItem,
+                    AssignedUser = p.AssignedUser != null ? new { p.AssignedUser.Id, p.AssignedUser.Email } : null,
+                    Incidents = p.Incidents.Select(i => new { i.Id, i.Title })
+                }));
+        }
+
+        [HttpDelete("{problemId}")]
+        public IActionResult DeleteProblem(long problemId)
+        {
+            var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+            if (problem != null)
+            {
+                DbContext.Problems.Remove(problem);
+                DbContext.SaveChanges();
+                return Ok($"Incident {problemId} deleted succesfuly");
+            }
+
+            return NotFound($"{problemId} not found");
+        }
+
+        [HttpPatch("{problemId}")]
+        public IActionResult UpdateProblem([FromBody] ProblemDto modifiedProblem, long problemId)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = DbContext.Users.SingleOrDefault(u => u.Id == modifiedProblem.userId);
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == modifiedProblem.configurationItemId);
+                var problem = DbContext.Problems.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == problemId);
+                var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedProblem.assignedUserId);
+                var incidents = DbContext.Incidents.Include(i => i.Problems).Where(i => modifiedProblem.incidentIds.Contains(i.Id)).ToList();
+                if (problem != null)
+                {
+                    problem.Title = modifiedProblem.title;
+                    problem.Description = modifiedProblem.description;
+                    problem.AssignedUserId = modifiedProblem.assignedUserId;
+                    problem.AssignedUser = assignedUser;
+                    problem.Impact = modifiedProblem.impact;
+                    problem.Priority = modifiedProblem.priority;
+                    DbContext.Problems.Update(problem);
+                    DbContext.SaveChanges();
+                    var response = new
+                    {
+                        problem.Id,
+                        problem.Title,
+                        problem.Description,
+                        problem.CreatedDate,
+                        User = new { user.Id, user.Email },
+                        ConfigurationItem = new { configurationItem.Id, configurationItem.Title },
+                        AssignedUser = new { assignedUser.Id, assignedUser.Email },
+                        Incidents = incidents.Select(i => new { i.Id, i.Title })
+                    };
+                    return Ok(response);
+                }
+            }
             return BadRequest();
         }
     }

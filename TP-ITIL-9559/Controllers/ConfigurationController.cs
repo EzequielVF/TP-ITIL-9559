@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using TP_ITIL_9559.Data;
 using TP_ITIL_9559.Model;
 using TP_ITIL_9559.Data.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace TP_ITIL_9559.Controllers
 {
