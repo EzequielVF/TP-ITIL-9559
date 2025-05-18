@@ -11,7 +11,7 @@ namespace TP_ITIL_9559.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         public ITILDbContext DbContext { get; set; }
         public AccountController(ITILDbContext dbContext)
