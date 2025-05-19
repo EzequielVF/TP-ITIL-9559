@@ -73,7 +73,7 @@ namespace TP_ITIL_9559.Controllers
                 .Include(p => p.Incidents)
                 .OrderByDescending(p => p.CreatedDate)
                 .Select(p => new
-                {   
+                {
                     p.Id,
                     p.Title,
                     p.Description,
@@ -96,6 +96,30 @@ namespace TP_ITIL_9559.Controllers
             }
 
             return NotFound($"{problemId} not found");
+        }
+
+        [HttpGet("{problemId}")]
+        public IActionResult ProblemInfo(long problemId)
+        {
+            var problem = DbContext.Problems.Include(i => i.AssignedUser).Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == problemId);
+            if (problem != null)
+            {
+                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
+                if (configurationItem != null)
+                {
+                    problem.ConfigurationItem = configurationItem;
+                }
+
+                var userInfo = DbContext.Users.SingleOrDefault(u => u.Id == problem.UserId);
+                if (userInfo != null)
+                {
+                    problem.User = userInfo;
+                }
+
+                return Ok(problem);
+            }
+            return NotFound($"{problemId} not found");
+
         }
 
         [HttpPatch("{problemId}")]
@@ -133,6 +157,102 @@ namespace TP_ITIL_9559.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        [HttpPost("{problemId}/comments")]
+        public IActionResult SaveComment(long problemId, [FromBody] string comment)
+        {
+            var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+            if (problem == null)
+            {
+                return NotFound();
+            }
+            problem.Comments.Add(comment);
+
+            DbContext.SaveChanges();
+
+            return Ok(comment);
+        }
+
+        [HttpGet("{problemId}/comments")]
+        public IActionResult Comments(long problemId)
+        {
+            var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+            if (problem == null)
+            {
+                return NotFound();
+            }
+            return Ok(new { Comments = problem.Comments });
+        }
+
+        [HttpDelete("{problemId}/comments/{commentIndex}")]
+        public IActionResult DeleteComment(long problemId, int commentIndex)
+        {
+            var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
+            if (problem == null)
+            {
+                return NotFound();
+            }
+
+            if (commentIndex < 0 || commentIndex >= problem.Comments.Count)
+            {
+                return NotFound();
+            }
+
+            problem.Comments.RemoveAt(commentIndex);
+
+            DbContext.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpGet("{problemId}/incidents")]
+        public IActionResult ProblemIncidents(long problemId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            if (problem != null)
+            {
+                return Ok(problem.Incidents);
+            }
+            return NotFound();
+        }
+
+        [HttpPatch("{problemId}/incidents/{incidentId}")]
+        public IActionResult AddIncident(long problemId, long incidentId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            var incident = DbContext.Incidents.Include(i => i.Problems).SingleOrDefault(i => i.Id == incidentId);
+            if (problem != null && incident != null)
+            {
+                problem.Incidents.Add(incident);
+                incident.Problems.Add(problem);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
+
+        [HttpDelete("{problemId}/incidents/{incidentId}")]
+        public IActionResult RemoveIncident(long problemId, long incidentId)
+        {
+            var problem = DbContext.Problems.Include(i => i.Incidents).SingleOrDefault(i => i.Id == problemId);
+            var incident = DbContext.Incidents.Include(i => i.Problems).SingleOrDefault(i => i.Id == incidentId);
+            if (problem != null && incident != null)
+            {
+                problem.Incidents.Remove(incident);
+                incident.Problems.Remove(problem);
+                DbContext.SaveChanges();
+                return Ok(incident);
+            }
+            return NotFound();
+        }
+
+        [HttpGet("getproblems")]
+        public List<Problem> GetProblems()
+        {
+            var problems = DbContext.Problems
+            .OrderByDescending(i => i.CreatedDate);
+            return problems.ToList();
         }
     }
 }
