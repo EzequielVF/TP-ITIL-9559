@@ -22,7 +22,7 @@ namespace TP_ITIL_9559.Controllers
             return Ok(incidentMetrics);
         }
 
-        public IncidentMetricsDto GetIncidentMetrics()
+        private IncidentMetricsDto GetIncidentMetrics()
         {
             //TODO: devolver avgResolutionTime en horas
             //TODO: emprolijar codigo, poner constantes
