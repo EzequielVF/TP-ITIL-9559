@@ -48,6 +48,12 @@ namespace TP_ITIL_9559.Controllers
             return Ok(DbContext.Configuration.OrderByDescending(i => i.CreatedDate));
         }
 
+        [HttpGet("item/{itemId}")]
+        public IActionResult Items(long itemId)
+        {
+            return Ok(DbContext.Configuration.SingleOrDefault(i => i.Id == itemId));
+        }
+
         [HttpPatch("item/{itemId}")]
         public IActionResult UpdateItem([FromBody] ConfigurationItemDto modifiedItem, long itemId)
         {
