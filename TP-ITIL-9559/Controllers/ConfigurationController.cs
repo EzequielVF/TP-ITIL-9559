@@ -89,5 +89,27 @@ namespace TP_ITIL_9559.Controllers
             }
             return NotFound($"Item: {itemId} not found");
         }
+
+        [HttpGet("item/{itemId}/incidents")]
+        public IActionResult GetIncidentsByConfigurationItem(int itemId)
+        {
+            var configurationItem = DbContext.Configuration
+                .Include(ci => ci.User)
+                .SingleOrDefault(ci => ci.Id == itemId);
+
+            if (configurationItem == null)
+            {
+                return NotFound($"ConfigurationItem with id {itemId} not found.");
+            }
+
+            var incidents = DbContext.Incidents
+                .Include(i => i.User)
+                .Include(i => i.AssignedUser)
+                .Where(i => i.ConfigurationItemId == itemId)
+                .OrderByDescending(i => i.CreatedDate)
+                .ToList();
+
+            return Ok(incidents);
+        }
     }
 }
