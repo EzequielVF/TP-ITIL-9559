@@ -13,24 +13,21 @@ namespace TP_ITIL_9559.Controllers
             DbContext = dbContext;
         }
 
-        [HttpGet("incidents")]
-        public IActionResult IncidentMetrics()
+        [HttpGet("incidents/{days}")]
+        public IActionResult IncidentMetrics(int days)
         {
             var incidents = DbContext.Incidents;
             if (incidents == null) {return NotFound();}
-            var incidentMetrics = GetIncidentMetrics();
+            var incidentMetrics = GetIncidentMetrics(days);
             return Ok(incidentMetrics);
         }
 
-        private IncidentMetricsDto GetIncidentMetrics()
+        private IncidentMetricsDto GetIncidentMetrics(int days)
         {
-            //TODO: devolver avgResolutionTime en horas
-            //TODO: emprolijar codigo, poner constantes
-            DateTime startDate = DateTime.UtcNow.AddDays(-30);
+            DateTime startDate = DateTime.UtcNow.AddDays(-days);
             DateTime endDate = DateTime.UtcNow;
 
             DateTime startDateForHours = DateTime.UtcNow.AddDays(-9);
-            int totalDays = (int)(endDate - startDate).TotalDays;
             int totalHours = (int)(endDate - startDateForHours).TotalHours;
 
             float[] incidentsPerDay = new float[7];
@@ -57,10 +54,10 @@ namespace TP_ITIL_9559.Controllers
                 incidentsCountPerDayOfWeek[dayOfWeek] = item.Count;
             }
 
-            //finalmente dividimos la sumatoria de cada dia por 30, que es la cantidad total de dias.
+            //acumulo por la cantidad total de cada dia.
             for (int i = 0; i < incidentsCountPerDayOfWeek.Length; i++)
             {
-                incidentsPerDay[i] = (float)incidentsCountPerDayOfWeek[i] / totalDays;
+                incidentsPerDay[i] = (float)incidentsCountPerDayOfWeek[i];
             }
 
             //se agrupa por cada hora del dia y se suma cuantos incidentes hay cada uno de esas horas.
@@ -123,7 +120,6 @@ namespace TP_ITIL_9559.Controllers
                 IncidentsPerDay = incidentsPerDay,
                 //se obtiene haciendo la suma total de incidentes para cada hora
                 //tomando los ultimos 7 dias.
-                //TODO: arrglar la diferencia por 3 horas, UTC(actualmente 19hs me lo muestra como 16hs)
                 IncidentsPerHour = incidentsCountPerHourOfDay,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
