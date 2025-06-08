@@ -71,8 +71,6 @@ namespace TP_ITIL_9559.Controllers
                 incidentsPerDay[i] = (float)incidentsCountPerDayOfWeek[i];
             }
 
-            //se agrupa por cada hora del dia y se suma cuantos incidentes hay cada uno de esas horas.
-            //se resta 3 para que sea hora local.
             var groupByHourOfDay = DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
                 .GroupBy(i => (i.CreatedDate.Hour))
@@ -89,7 +87,7 @@ namespace TP_ITIL_9559.Controllers
             //completamos con la info de la query almacenada en groupByHourOfDay
             foreach (var item in groupByHourOfDay)
             {
-                int hour = item.Hour;
+                int hour = RestarHoraConRollover(item.Hour, 3);
                 incidentsCountPerHourOfDay[hour] = (float)item.Count;
             }
 
@@ -134,6 +132,13 @@ namespace TP_ITIL_9559.Controllers
             };
 
             return incidentMetrics;
+        }
+        private int RestarHoraConRollover(int hora, int resta)
+        {
+            int resultado = (hora - resta) % 24;
+            if (resultado < 0)
+                resultado += 24;
+            return resultado;
         }
     }
 }
