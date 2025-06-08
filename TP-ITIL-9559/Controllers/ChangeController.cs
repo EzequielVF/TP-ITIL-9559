@@ -160,7 +160,7 @@ namespace TP_ITIL_9559.Controllers
 
         }
 
-        [HttpDelete("{itemId}")]
+        [HttpDelete("")]
         public IActionResult DeleteChange(long changeId)
         {
             var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
@@ -175,7 +175,7 @@ namespace TP_ITIL_9559.Controllers
         }
 
         [HttpPost("{changeId}/comment")]
-        public IActionResult SaveComment(long changeId, string comment)
+        public IActionResult SaveComment(long changeId, [FromBody] string comment)
         {
             var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
             if (change == null)
