@@ -25,13 +25,11 @@ namespace TP_ITIL_9559.Controllers
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == item.userId);
                 var history = new Dictionary<string, object>();
                 history[item.versionId] = String.Format("Titulo:{0}|Descripcion:{1}", item.title, item.description);
-                TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
-                DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
                 DbContext.Configuration.Add(new ConfigurationItem()
                 {
                     Title = item.title,
                     Description = item.description,
-                    CreatedDate = nowArgentina,
+                    CreatedDate = DateTime.UtcNow,
                     UserId = item.userId,
                     User = user,
                     VersionId = item.versionId,

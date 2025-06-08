@@ -29,13 +29,12 @@ namespace TP_ITIL_9559.Controllers
                 DateTime scheduled = DateTime.Parse(changeDto.ScheduledDate);
                 var incidents = DbContext.Incidents.Include(i => i.Changes).Where(i => changeDto.IncidentIds.Contains(i.Id)).ToList();
                 var problems = DbContext.Problems.Include(p => p.Changes).Where(p => changeDto.ProblemIds.Contains(p.Id)).ToList();
-                TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
-                DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
+
                 var change = new Change()
                 {
                     Title = changeDto.Title,
                     Description = changeDto.Description,
-                    CreatedDate = nowArgentina,
+                    CreatedDate = DateTime.UtcNow,
                     UserId = changeDto.UserId,
                     User = user,
                     ConfigurationItemId = changeDto.ConfigurationItemId,
