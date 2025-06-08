@@ -99,7 +99,8 @@ namespace TP_ITIL_9559.Controllers
 
             int maxDay = incidentsCountPerDayOfWeek.Max();
             int maxIndex = incidentsCountPerDayOfWeek.ToList().IndexOf(maxDay);
-            string dayWithMostIncidents = Enum.GetName(typeof(DayOfWeek), maxIndex) ?? "Unknown";
+            string dayWithMostIncidents = new DateTime(2024, 6, 2 + maxIndex, 0, 0, 0)
+    .ToString("dddd", new System.Globalization.CultureInfo("es-ES"));
 
             int maxHour = (int)incidentsCountPerHourOfDay.Max();
             int hourWithMostIncidents = incidentsCountPerHourOfDay.ToList().IndexOf(maxHour);
