@@ -14,8 +14,8 @@ namespace TP_ITIL_9559.Controllers
             DbContext = dbContext;
         }
 
-        [HttpGet("incidents/{days}")]
-        public IActionResult IncidentMetrics(int days)
+        [HttpGet("incidents/{days?}")]
+        public IActionResult IncidentMetrics(int days = 30)
         {
             var incidents = DbContext.Incidents;
             if (incidents == null) { return NotFound(); }
