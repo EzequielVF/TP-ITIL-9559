@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TP_ITIL_9559.Data;
@@ -12,9 +13,11 @@ using TP_ITIL_9559.Data;
 namespace TP_ITIL_9559.Migrations
 {
     [DbContext(typeof(ITILDbContext))]
-    partial class ITILDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250608153313_addClientTable")]
+    partial class addClientTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

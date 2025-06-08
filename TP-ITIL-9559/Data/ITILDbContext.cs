@@ -23,5 +23,6 @@ namespace TP_ITIL_9559.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Change> Changes { get; set; }
         public DbSet<ConfigurationItem> Configuration { get; set; }
+        public DbSet<Client> Clients { get; set; }
     }
 }
