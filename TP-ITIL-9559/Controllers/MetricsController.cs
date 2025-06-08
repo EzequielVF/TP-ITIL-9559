@@ -6,10 +6,11 @@ namespace TP_ITIL_9559.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MetricsController: Controller
+    public class MetricsController : Controller
     {
-        public ITILDbContext DbContext {get;set;}
-        public MetricsController(ITILDbContext dbContext){
+        public ITILDbContext DbContext { get; set; }
+        public MetricsController(ITILDbContext dbContext)
+        {
             DbContext = dbContext;
         }
 
@@ -17,7 +18,7 @@ namespace TP_ITIL_9559.Controllers
         public IActionResult IncidentMetrics(int days)
         {
             var incidents = DbContext.Incidents;
-            if (incidents == null) {return NotFound();}
+            if (incidents == null) { return NotFound(); }
             var incidentMetrics = GetIncidentMetrics(days);
             return Ok(incidentMetrics);
         }
@@ -33,6 +34,16 @@ namespace TP_ITIL_9559.Controllers
             float[] incidentsPerDay = new float[7];
             float[] incidentsPerHour = new float[24];
 
+            var mostAfectedItemKey = DbContext.Incidents
+                .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
+                .GroupBy(i => i.ConfigurationItemId)
+                .Select(g => new { Item = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .FirstOrDefault();
+
+            var mostAfectedItemName = DbContext.Configuration
+                .Where(i => i.Id == mostAfectedItemKey.Item).FirstOrDefault();
+
             //se agrupa por cada dia de la semana y se suma cuantos incidentes hay cada uno de esos dias.
             var groupByDayOfWeek = DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
@@ -42,7 +53,7 @@ namespace TP_ITIL_9559.Controllers
             int[] incidentsCountPerDayOfWeek = new int[7]; // Array to store the result
 
             //inicializamos cada dia de la semana en 0.
-            for(int i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
                 incidentsCountPerDayOfWeek[i] = 0;
             }
@@ -62,15 +73,15 @@ namespace TP_ITIL_9559.Controllers
 
             //se agrupa por cada hora del dia y se suma cuantos incidentes hay cada uno de esas horas.
             //se resta 3 para que sea hora local.
-            var groupByHourOfDay= DbContext.Incidents
+            var groupByHourOfDay = DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
-                .GroupBy(i => (i.CreatedDate.Hour - 3))
+                .GroupBy(i => (i.CreatedDate.Hour))
                 .Select(g => new { Hour = g.Key, Count = g.Count() });
 
             float[] incidentsCountPerHourOfDay = new float[24]; // Array to store the result
 
             //inicializamos cada hora del dia en 0.
-            for(int i = 0; i < 24; i++)
+            for (int i = 0; i < 24; i++)
             {
                 incidentsCountPerHourOfDay[i] = 0;
             }
@@ -114,16 +125,12 @@ namespace TP_ITIL_9559.Controllers
 
             var incidentMetrics = new IncidentMetricsDto()
             {
-                //se obtiene haciendo la suma total de incidentes para cada dia
-                //tomando los ultimos 30 dias, y dividiendo esa suma por 30 que es
-                //la cantidad total de dias.
                 IncidentsPerDay = incidentsPerDay,
-                //se obtiene haciendo la suma total de incidentes para cada hora
-                //tomando los ultimos 7 dias.
                 IncidentsPerHour = incidentsCountPerHourOfDay,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
-                AvgResolutionTime = avgResolutionTime.ToString()
+                AvgResolutionTime = avgResolutionTime.ToString(),
+                mostAfectedItemName = mostAfectedItemName?.Title ?? "Unknown"
             };
 
             return incidentMetrics;
