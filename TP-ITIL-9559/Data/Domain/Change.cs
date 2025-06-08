@@ -22,7 +22,7 @@ namespace TP_ITIL_9559.Data.Domain
         public string Impact {get;set;}
         public string Priority {get;set;}
         public List<string> Comments {get;set;}
-
+        public bool Disabled { get; set; }
         public Change(){
             Comments = new List<string>();
         }

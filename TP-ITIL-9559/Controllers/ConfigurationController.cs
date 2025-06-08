@@ -33,7 +33,8 @@ namespace TP_ITIL_9559.Controllers
                     UserId = item.userId,
                     User = user,
                     VersionId = item.versionId,
-                    VersionHistory = JsonConvert.SerializeObject(history)
+                    VersionHistory = JsonConvert.SerializeObject(history),
+                    Disabled = false
                 });
 
                 DbContext.SaveChanges();
@@ -45,7 +46,7 @@ namespace TP_ITIL_9559.Controllers
         [HttpGet("items")]
         public IActionResult Items()
         {
-            return Ok(DbContext.Configuration.OrderByDescending(i => i.CreatedDate));
+            return Ok(DbContext.Configuration.Where(i => i.Disabled == false).OrderByDescending(i => i.CreatedDate));
         }
 
         [HttpGet("item/{itemId}")]
@@ -83,9 +84,10 @@ namespace TP_ITIL_9559.Controllers
             var item = DbContext.Configuration.SingleOrDefault(i => i.Id == itemId);
             if (item != null)
             {
-                DbContext.Configuration.Remove(item);
+                item.Disabled = true;
+                DbContext.Configuration.Update(item);
                 DbContext.SaveChanges();
-                return Ok($"Item: {itemId} deleted succesfuly");
+                return Ok($"Item: {itemId} disabled succesfuly");
             }
             return NotFound($"Item: {itemId} not found");
         }

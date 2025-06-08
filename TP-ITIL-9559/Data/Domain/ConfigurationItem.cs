@@ -9,6 +9,6 @@ namespace TP_ITIL_9559.Data.Domain
         public virtual User User {get; set;}
         public string VersionId {get; set;}
         public string VersionHistory {get; set;}
-
+        public bool Disabled { get; set; }
     }
 }

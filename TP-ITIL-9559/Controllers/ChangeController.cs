@@ -48,7 +48,8 @@ namespace TP_ITIL_9559.Controllers
                     Priority = changeDto.Priority,
                     ScheduledDate = DateTime.SpecifyKind(scheduled, DateTimeKind.Utc),
                     Incidents = incidents,
-                    Problems = problems
+                    Problems = problems,
+                    Disabled = false
                 };
 
                 foreach (var incident in incidents)
@@ -127,6 +128,7 @@ namespace TP_ITIL_9559.Controllers
         public IActionResult Changes()
         {
             return Ok(DbContext.Changes
+            .Where(i => i.Disabled == false)
             .Include(i => i.AssignedUser)
             .Include(i => i.Incidents)
             .Include(i => i.Problems)
@@ -166,9 +168,10 @@ namespace TP_ITIL_9559.Controllers
             var change = DbContext.Changes.SingleOrDefault(i => i.Id == changeId);
             if (change != null)
             {
-                DbContext.Changes.Remove(change);
+                change.Disabled = true;
+                DbContext.Changes.Update(change);
                 DbContext.SaveChanges();
-                return Ok($"Incident {changeId} deleted succesfuly");
+                return Ok($"Incident {changeId} disabled succesfuly");
             }
 
             return NotFound($"{changeId} not found");

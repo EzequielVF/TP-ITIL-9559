@@ -38,7 +38,8 @@ namespace TP_ITIL_9559.Controllers
                     AssignedUser = assignedUser,
                     Impact = problemDto.impact,
                     Priority = problemDto.priority,
-                    Incidents = incidents
+                    Incidents = incidents,
+                    Disabled = false
                 };
 
                 foreach (var incident in incidents)
@@ -69,6 +70,7 @@ namespace TP_ITIL_9559.Controllers
         public IActionResult Problems()
         {
             return Ok(DbContext.Problems
+                .Where(i => i.Disabled == false)
                 .Include(p => p.AssignedUser)
                 .Include(p => p.Incidents)
                 .OrderByDescending(p => p.CreatedDate)
@@ -90,9 +92,10 @@ namespace TP_ITIL_9559.Controllers
             var problem = DbContext.Problems.SingleOrDefault(i => i.Id == problemId);
             if (problem != null)
             {
-                DbContext.Problems.Remove(problem);
+                problem.Disabled = true;
+                DbContext.Problems.Update(problem);
                 DbContext.SaveChanges();
-                return Ok($"Incident {problemId} deleted succesfuly");
+                return Ok($"Incident {problemId} disabled succesfuly");
             }
 
             return NotFound($"{problemId} not found");
@@ -251,6 +254,7 @@ namespace TP_ITIL_9559.Controllers
         public List<Problem> GetProblems()
         {
             var problems = DbContext.Problems
+            .Where(i => i.Disabled == false)
             .OrderByDescending(i => i.CreatedDate);
             return problems.ToList();
         }

@@ -42,7 +42,8 @@ namespace TP_ITIL_9559.Controllers
                     AssignedUserId = incident.AssignedUserId,
                     AssignedUser = assignedUser,
                     Impact = incident.Impact,
-                    Priority = incident.Priority
+                    Priority = incident.Priority,
+                    Disabled = false
                 });
 
                 DbContext.SaveChanges();
@@ -83,6 +84,7 @@ namespace TP_ITIL_9559.Controllers
         public IActionResult Incidents()
         {
             return Ok(DbContext.Incidents
+            .Where(i => i.Disabled == false)
             .Include(i => i.ConfigurationItem)
             .Include(i => i.AssignedUser)
             .OrderByDescending(i => i.CreatedDate));
@@ -118,9 +120,10 @@ namespace TP_ITIL_9559.Controllers
             var incident = DbContext.Incidents.SingleOrDefault(i => i.Id == incidentId);
             if (incident != null)
             {
-                DbContext.Incidents.Remove(incident);
+                incident.Disabled = true;
+                DbContext.Incidents.Update(incident);
                 DbContext.SaveChanges();
-                return Ok($"Incident {incidentId} deleted succesfuly");
+                return Ok($"Incident {incidentId} disabled succesfuly");
             }
 
             return NotFound($"{incidentId} not found");
@@ -188,6 +191,7 @@ namespace TP_ITIL_9559.Controllers
         public List<Incident> GetIncidents()
         {
             var incidents = DbContext.Incidents
+            .Where(i => i.Disabled == false)
             .OrderByDescending(i => i.CreatedDate);
             return incidents.ToList();
         }

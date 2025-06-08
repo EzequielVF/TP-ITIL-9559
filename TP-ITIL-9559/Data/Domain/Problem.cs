@@ -18,6 +18,7 @@ namespace TP_ITIL_9559.Data.Domain
         public virtual User AssignedUser {get;set;}
         public string Impact {get;set;}
         public string Priority {get;set;}
+        public bool Disabled { get; set; }
         public List<string> Comments {get;set;}
 
         public Problem(){
