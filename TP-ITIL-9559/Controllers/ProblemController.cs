@@ -25,11 +25,13 @@ namespace TP_ITIL_9559.Controllers
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problemDto.configurationItemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == problemDto.assignedUserId);
                 var incidents = DbContext.Incidents.Include(i => i.Problems).Where(i => problemDto.incidentIds.Contains(i.Id)).ToList();
+                TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+                DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
                 var problem = new Problem()
                 {
                     Title = problemDto.title,
                     Description = problemDto.description,
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = nowArgentina,
                     UserId = problemDto.userId,
                     User = user,
                     ConfigurationItemId = problemDto.configurationItemId,

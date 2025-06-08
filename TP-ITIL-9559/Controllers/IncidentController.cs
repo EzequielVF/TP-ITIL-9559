@@ -25,11 +25,13 @@ namespace TP_ITIL_9559.Controllers
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == incident.UserId);
                 var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == incident.ConfigurationItemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == incident.AssignedUserId);
+                TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+                DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
                 DbContext.Incidents.Add(new Incident()
                 {
                     Title = incident.Title,
                     Description = incident.Description,
-                    CreatedDate = DateTime.UtcNow,
+                    CreatedDate = nowArgentina,
                     UserId = incident.UserId,
                     User = user,
                     ConfigurationItemId = incident.ConfigurationItemId,
@@ -58,6 +60,8 @@ namespace TP_ITIL_9559.Controllers
             {
                 var incident = DbContext.Incidents.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == incidentId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedIncident.AssignedUserId);
+                TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+                DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
                 if (incident != null)
                 {
                     incident.Title = modifiedIncident.Title;
@@ -67,9 +71,9 @@ namespace TP_ITIL_9559.Controllers
                     incident.AssignedUser = assignedUser;
                     incident.Impact = modifiedIncident.Impact;
                     incident.Priority = modifiedIncident.Priority;
-                    incident.LastUpdated = DateTime.UtcNow;
+                    incident.LastUpdated = nowArgentina;
                     incident.RootCause = modifiedIncident.RootCause;
-                    if (incident.State == State.IMPLEMENTADO) { incident.ClosedDate = DateTime.UtcNow; }
+                    if (incident.State == State.IMPLEMENTADO) { incident.ClosedDate = nowArgentina; }
                     DbContext.Incidents.Update(incident);
                     DbContext.SaveChanges();
                     return Ok(incident);

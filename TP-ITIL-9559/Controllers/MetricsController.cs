@@ -24,10 +24,12 @@ namespace TP_ITIL_9559.Controllers
 
         private IncidentMetricsDto GetIncidentMetrics(int days)
         {
-            DateTime startDate = DateTime.UtcNow.AddDays(-days);
-            DateTime endDate = DateTime.UtcNow;
+            TimeZoneInfo argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+            DateTime nowArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
+            DateTime startDate = nowArgentina.AddDays(-days);
+            DateTime endDate = nowArgentina;
 
-            DateTime startDateForHours = DateTime.UtcNow.AddDays(-9);
+            DateTime startDateForHours = nowArgentina.AddDays(-9);
             int totalHours = (int)(endDate - startDateForHours).TotalHours;
 
             float[] incidentsPerDay = new float[7];
@@ -114,12 +116,7 @@ namespace TP_ITIL_9559.Controllers
 
             var incidentMetrics = new IncidentMetricsDto()
             {
-                //se obtiene haciendo la suma total de incidentes para cada dia
-                //tomando los ultimos 30 dias, y dividiendo esa suma por 30 que es
-                //la cantidad total de dias.
                 IncidentsPerDay = incidentsPerDay,
-                //se obtiene haciendo la suma total de incidentes para cada hora
-                //tomando los ultimos 7 dias.
                 IncidentsPerHour = incidentsCountPerHourOfDay,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
