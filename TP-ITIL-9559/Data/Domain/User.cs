@@ -11,6 +11,8 @@ namespace TP_ITIL_9559.Data.Domain
         [StringLength(100)]
         public string Password { get; set; }
 
+        public int Group { get; set; }
+
         [InverseProperty("User")]
         public virtual ICollection<Incident> Incidents { get; set; }
 

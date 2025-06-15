@@ -42,7 +42,8 @@ namespace TP_ITIL_9559.Controllers
 
             return Ok(new
             {
-                userId = currentUser.Id
+                userId = currentUser.Id,
+                group = currentUser.Group
             });
         }
 
@@ -109,7 +110,8 @@ namespace TP_ITIL_9559.Controllers
             return Ok(new
             {
                 id = user.Id,
-                email = user.Email
+                email = user.Email,
+                group = user.Group
             });
         }
 
