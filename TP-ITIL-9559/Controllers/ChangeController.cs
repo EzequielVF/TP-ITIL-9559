@@ -87,15 +87,7 @@ namespace TP_ITIL_9559.Controllers
                         var history = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.VersionHistory);
                         var highestVersionKey = change.ConfigurationItem.VersionId == null ? "v1.0" : change.ConfigurationItem.VersionId;
                         var newVersionKey = IncrementVersion(highestVersionKey);
-                        if (history != null)
-                        {
-                            highestVersionKey = history.Keys.Where(key => key.StartsWith("v"))
-                            .Select(key => key.Substring(1))
-                            .OrderByDescending(version => float.Parse(version, CultureInfo.InvariantCulture.NumberFormat))
-                            .FirstOrDefault();
-                            highestVersionKey = "v" + highestVersionKey;
-                            newVersionKey = IncrementVersion(highestVersionKey);
-                        }
+                        
                         if (history == null) { history = new Dictionary<string, object>(); }
                         var newDescription = item.Description + $". Modified according to {change.Title} change. Update from {highestVersionKey} to {newVersionKey}";
                         history[newVersionKey] = String.Format("Titulo:{0}|Descripcion:{1}", item.Title, newDescription);
@@ -117,9 +109,9 @@ namespace TP_ITIL_9559.Controllers
 
         private static string IncrementVersion(string versionKey)
         {
-            var key = versionKey.Substring(1);
-            var number = float.Parse(key, CultureInfo.InvariantCulture.NumberFormat);
-            var newNumber = number + 0.1;
+            var key = versionKey.Length > 1 ? versionKey.Substring(1) : versionKey;
+            var number = decimal.Parse(key, CultureInfo.InvariantCulture.NumberFormat);
+            var newNumber = number + 0.1m;
             var newVersion = "v" + newNumber.ToString();
             return newVersion.Replace(',', '.');
         }
