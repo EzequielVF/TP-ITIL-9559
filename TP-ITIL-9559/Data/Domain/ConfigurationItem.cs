@@ -7,8 +7,10 @@ namespace TP_ITIL_9559.Data.Domain
         public DateTime CreatedDate { get; set; }
         public int UserId { get; set; }
         public virtual User User {get; set;}
-        public string VersionId {get; set;}
-        public string VersionHistory {get; set;}
+        public string VersionId {get; set; }
+        public string VersionHistory { get; set; }
+        public string ClientName { get; set; }
+        public string ClientEmail { get; set; }
         public bool Disabled { get; set; }
     }
 }

@@ -17,8 +17,6 @@ namespace TP_ITIL_9559.Data.Domain
         public DateTime ClosedDate {get;set;}
         public DateTime LastUpdated {get;set;}
         public string? RootCause {get;set;}
-        public string ClientName {get;set;}
-        public string ClientEmail {get;set;}
         public string State {get;set;}
         public int AssignedUserId {get;set;}
         [ForeignKey("AssignedUserId")]

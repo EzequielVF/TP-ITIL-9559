@@ -31,6 +31,8 @@ namespace TP_ITIL_9559.Controllers
                     Description = item.description,
                     CreatedDate = DateTime.UtcNow,
                     UserId = item.userId,
+                    ClientEmail = item.ClientEmail,
+                    ClientName = item.ClientName,
                     User = user,
                     VersionId = item.versionId,
                     VersionHistory = JsonConvert.SerializeObject(history),

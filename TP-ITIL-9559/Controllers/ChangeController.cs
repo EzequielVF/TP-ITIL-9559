@@ -39,8 +39,6 @@ namespace TP_ITIL_9559.Controllers
                     User = user,
                     ConfigurationItemId = changeDto.ConfigurationItemId,
                     ConfigurationItem = configurationItem,
-                    ClientName = changeDto.ClientName,
-                    ClientEmail = changeDto.ClientEmail,
                     State = State.ABIERTO,
                     AssignedUserId = changeDto.AssignedUserId,
                     AssignedUser = assignedUser,

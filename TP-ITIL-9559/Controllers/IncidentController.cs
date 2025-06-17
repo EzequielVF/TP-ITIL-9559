@@ -36,8 +36,6 @@ namespace TP_ITIL_9559.Controllers
                     ConfigurationItem = configurationItem,
                     RootCause = incident.RootCause,
                     LastUpdated = DateTime.UtcNow,
-                    ClientName = incident.ClientName,
-                    ClientEmail = incident.ClientEmail,
                     State = State.ABIERTO,
                     AssignedUserId = incident.AssignedUserId,
                     AssignedUser = assignedUser,
