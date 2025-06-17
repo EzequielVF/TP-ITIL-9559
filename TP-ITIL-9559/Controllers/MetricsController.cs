@@ -116,10 +116,10 @@ namespace TP_ITIL_9559.Controllers
                     .Sum(i => (i.ClosedDate - i.CreatedDate).TotalMilliseconds));
             }
 
-            TimeSpan avgResolutionTime = TimeSpan.Zero;
+            double avgResolutionTime = 0.0;
             if (closedIncidentsCount > 0)
             {
-                avgResolutionTime = TimeSpan.FromTicks(totalResolutionTime.Ticks / closedIncidentsCount);
+                avgResolutionTime = totalResolutionTime.TotalHours / closedIncidentsCount;
             }
 
             var incidentMetrics = new IncidentMetricsDto()
@@ -128,7 +128,7 @@ namespace TP_ITIL_9559.Controllers
                 IncidentsPerHour = incidentsCountPerHourOfDay,
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
-                AvgResolutionTime = avgResolutionTime.ToString(),
+                AvgResolutionTime = avgResolutionTime,
                 mostAfectedItemName = mostAfectedItemName?.Title ?? "Unknown"
             };
 

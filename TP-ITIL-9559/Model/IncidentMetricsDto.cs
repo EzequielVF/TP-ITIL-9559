@@ -6,7 +6,7 @@ namespace TP_ITIL_9559.Model
         public float[] IncidentsPerHour {get;set;}
         public int HourWithMostIncidents {get;set;}
         public string DayWithMostIncidents {get;set;}
-        public string AvgResolutionTime {get;set;}
+        public double AvgResolutionTime {get;set;}
         public string mostAfectedItemName { get; set; }
     }
 }
