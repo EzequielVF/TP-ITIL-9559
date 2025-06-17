@@ -89,7 +89,7 @@ namespace TP_ITIL_9559.Controllers
                         var newVersionKey = IncrementVersion(highestVersionKey);
                         
                         if (history == null) { history = new Dictionary<string, object>(); }
-                        var newDescription = item.Description + $". Modified according to {change.Title} change. Update from {highestVersionKey} to {newVersionKey}";
+                        var newDescription = item.Description + $".\nModificado segun el cambio {change.Title}.\nActualizado de {highestVersionKey} a {newVersionKey}";
                         history[newVersionKey] = String.Format("Titulo:{0}|Descripcion:{1}", item.Title, newDescription);
                         item.VersionId = newVersionKey;
                         item.VersionHistory = JsonConvert.SerializeObject(history);
