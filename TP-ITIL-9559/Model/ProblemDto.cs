@@ -5,7 +5,6 @@
         public string title { get; set; }
         public string description { get; set; }
         public int userId { get; set; }
-        public int configurationItemId { get; set; }
         public int assignedUserId { get; set; }
         public string impact { get; set; }
         public string priority { get; set; }

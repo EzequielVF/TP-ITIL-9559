@@ -22,7 +22,6 @@ namespace TP_ITIL_9559.Controllers
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == problemDto.userId);
-                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problemDto.configurationItemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == problemDto.assignedUserId);
                 var incidents = DbContext.Incidents.Include(i => i.Problems).Where(i => problemDto.incidentIds.Contains(i.Id)).ToList();
                 var problem = new Problem()
@@ -32,8 +31,6 @@ namespace TP_ITIL_9559.Controllers
                     CreatedDate = DateTime.UtcNow,
                     UserId = problemDto.userId,
                     User = user,
-                    ConfigurationItemId = problemDto.configurationItemId,
-                    ConfigurationItem = configurationItem,
                     AssignedUserId = problemDto.assignedUserId,
                     AssignedUser = assignedUser,
                     Impact = problemDto.impact,
@@ -57,7 +54,6 @@ namespace TP_ITIL_9559.Controllers
                     problem.Description,
                     problem.CreatedDate,
                     User = new { user.Id, user.Email },
-                    ConfigurationItem = new { configurationItem.Id, configurationItem.Title },
                     AssignedUser = new { assignedUser.Id, assignedUser.Email },
                     Incidents = incidents.Select(i => new { i.Id, i.Title })
                 };
@@ -80,7 +76,6 @@ namespace TP_ITIL_9559.Controllers
                     p.Title,
                     p.Description,
                     p.CreatedDate,
-                    p.ConfigurationItem,
                     AssignedUser = p.AssignedUser != null ? new { p.AssignedUser.Id, p.AssignedUser.Email } : null,
                     Incidents = p.Incidents.Select(i => new { i.Id, i.Title })
                 }));
@@ -104,14 +99,9 @@ namespace TP_ITIL_9559.Controllers
         [HttpGet("{problemId}")]
         public IActionResult ProblemInfo(long problemId)
         {
-            var problem = DbContext.Problems.Include(i => i.AssignedUser).Include(i => i.ConfigurationItem).SingleOrDefault(i => i.Id == problemId);
+            var problem = DbContext.Problems.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == problemId);
             if (problem != null)
             {
-                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == problem.ConfigurationItemId);
-                if (configurationItem != null)
-                {
-                    problem.ConfigurationItem = configurationItem;
-                }
 
                 var userInfo = DbContext.Users.SingleOrDefault(u => u.Id == problem.UserId);
                 if (userInfo != null)
@@ -131,7 +121,6 @@ namespace TP_ITIL_9559.Controllers
             if (ModelState.IsValid)
             {
                 var user = DbContext.Users.SingleOrDefault(u => u.Id == modifiedProblem.userId);
-                var configurationItem = DbContext.Configuration.SingleOrDefault(c => c.Id == modifiedProblem.configurationItemId);
                 var problem = DbContext.Problems.Include(i => i.AssignedUser).SingleOrDefault(i => i.Id == problemId);
                 var assignedUser = DbContext.Users.SingleOrDefault(u => u.Id == modifiedProblem.assignedUserId);
                 var incidents = DbContext.Incidents.Include(i => i.Problems).Where(i => modifiedProblem.incidentIds.Contains(i.Id)).ToList();
@@ -152,7 +141,6 @@ namespace TP_ITIL_9559.Controllers
                         problem.Description,
                         problem.CreatedDate,
                         User = new { user.Id, user.Email },
-                        ConfigurationItem = new { configurationItem.Id, configurationItem.Title },
                         AssignedUser = new { assignedUser.Id, assignedUser.Email },
                         Incidents = incidents.Select(i => new { i.Id, i.Title })
                     };

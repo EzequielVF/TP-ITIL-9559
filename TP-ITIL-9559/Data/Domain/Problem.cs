@@ -10,9 +10,6 @@ namespace TP_ITIL_9559.Data.Domain
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User {get; set;}
-        public int? ConfigurationItemId {get; set;}
-        [ForeignKey("ConfigurationItemId")]
-        public virtual ConfigurationItem ConfigurationItem {get; set;}
         public int AssignedUserId {get;set;}
         [ForeignKey("AssignedUserId")]
         public virtual User AssignedUser {get;set;}
