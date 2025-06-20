@@ -5,7 +5,8 @@ using TP_ITIL_9559.Interceptos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-
+using Microsoft.Extensions.Options;
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
@@ -14,8 +15,7 @@ builder.Services.AddControllers()
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false);
-
-var connectionString = builder.Configuration.GetConnectionString("MyPostgresConnection") ?? throw new InvalidOperationException("Connection string 'MyPostgresConnection' not found.");
+var connectionString = Environment.GetEnvironmentVariable("MYPOSTGRESCONNECTION") ?? builder.Configuration.GetConnectionString("MyPostgresConnection") ?? throw new InvalidOperationException("Connection string 'MyPostgresConnection' not found.");
 builder.Services.AddDbContext<ITILDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

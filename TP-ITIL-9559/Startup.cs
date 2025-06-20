@@ -13,7 +13,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<ITILDbContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("MyPostgresConnection")));
+            options.UseNpgsql(Environment.GetEnvironmentVariable("MYPOSTGRESCONNECTION") ?? Configuration.GetConnectionString("MyPostgresConnection")));
 
         services.AddControllers();
         services.AddControllersWithViews();
