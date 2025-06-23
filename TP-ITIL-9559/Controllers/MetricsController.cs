@@ -41,9 +41,13 @@ namespace TP_ITIL_9559.Controllers
                 .OrderByDescending(g => g.Count)
                 .FirstOrDefault();
 
-            var mostAfectedItemName = DbContext.Configuration
-                .Where(i => i.Id == mostAfectedItemKey.Item).FirstOrDefault();
-
+            var mostAfectedItemName = "No Disponible";
+            if (mostAfectedItemKey != null)
+            {
+                mostAfectedItemName = DbContext.Configuration
+                .Where(i => i.Id == mostAfectedItemKey.Item).FirstOrDefault()?.Title;
+            }
+            
             //se agrupa por cada dia de la semana y se suma cuantos incidentes hay cada uno de esos dias.
             var groupByDayOfWeek = DbContext.Incidents
                 .Where(i => i.CreatedDate >= startDate && i.CreatedDate <= endDate)
@@ -129,7 +133,7 @@ namespace TP_ITIL_9559.Controllers
                 DayWithMostIncidents = dayWithMostIncidents,
                 HourWithMostIncidents = hourWithMostIncidents,
                 AvgResolutionTime = avgResolutionTime,
-                mostAfectedItemName = mostAfectedItemName?.Title ?? "Unknown"
+                mostAfectedItemName = mostAfectedItemName ?? "No Disponible"
             };
 
             return incidentMetrics;
