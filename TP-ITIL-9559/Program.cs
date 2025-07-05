@@ -43,8 +43,11 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.Name = "TuCookieDeAuth"; // Nombre personalizado
+        options.Cookie.SameSite = SameSiteMode.None; // Usa None si frontend y backend están en dominios distintos
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Solo sobre HTTPS
+        options.Cookie.HttpOnly = true;
+        // No establezcas 'Domain' a menos que tengas subdominios, normalmente déjalo sin asignar
     });
 
 builder.Services.AddEndpointsApiExplorer();
