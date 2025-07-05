@@ -20,9 +20,6 @@ builder.Services.AddDbContext<ITILDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirConCredenciales", policy =>
