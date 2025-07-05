@@ -27,17 +27,28 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirConCredenciales", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-
-        policy.WithOrigins("https://tp-itil-app.vercel.app")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://tp-itil-app.vercel.app"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+    options.Secure = CookieSecurePolicy.Always;
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -48,10 +59,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseMiddleware<UserIdMiddleware>();
 app.UseMiddleware<ExceptionHandler>();
-app.UseAuthentication();
-
 app.UseCors("PermitirConCredenciales");
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
